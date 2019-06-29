@@ -21,7 +21,7 @@
             <i>{{item.name}}</i>
           </span>
         </el-row>
-        <!-- 輸入框 -->
+        <!-- 输入框 -->
         <el-row type="flex" align="middle" class="search-input">
           <input :placeholder="options[currentOption].placeholder" 
           v-model="searchValue"
