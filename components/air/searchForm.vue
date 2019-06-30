@@ -103,8 +103,8 @@ export default {
         async queryDestSearch(value, cb){
             const arr = await this.querySearchAsync(value)
             if(arr.length > 0){
-                this.form.departCity = arr[0].value;
-                this.form.departCode = arr[0].sort;
+                this.form.destCity = arr[0].value;
+                this.form.destCode = arr[0].sort;
             }
             cb(arr)
         },
@@ -181,7 +181,7 @@ export default {
                },
            }
            let valid = true;
-           object.keys(rules).forEach(v=>{
+           Object.keys(rules).forEach(v=>{
                if(!valid) return;
                const item = rules[v];
                if(!item.value){
@@ -195,7 +195,7 @@ export default {
            })
            if(!valid) return;
            this.$router.push({
-               path:'air/flights',
+               path:'/air/flights',
                query:this.form
            })
         }
