@@ -67,6 +67,7 @@
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
+        <input type="hidden" :value="allPrice">
       </div>
     </div>
   </div>
@@ -94,6 +95,21 @@ export default {
           type:Object,
           dafault:{}
       }
+  },
+  computed:{
+    allPrice(){
+      let price = 0;
+      let len = this.users.length;
+
+      price += this.data.seat_infos.org_settle_price * len;
+      this.insurances.forEach(v=>{
+        price += this.data.insurances[v-1].price * len;
+      });
+      price += this.data.airport_tax_audlet * len;
+      //触发设置总金额事件
+      this.$emit('setAllPrice',price)
+      return price;
+    }
   },
   methods: {
     // 添加乘机人
@@ -170,6 +186,34 @@ export default {
             seat_xid:this.data.seat_infos.seat_xid,
             air:this.data.id
         }
+        const {user:{userInfo}} = this.$store.state;
+        this.$message({
+          message:'正在生成订单！请稍等',
+          type:'success'
+        })
+        this.$axios({
+          url:`/airorders`,
+          method:'POST',
+          data:orderData,
+          headers:{
+            Authorization:`Bearer ${userInfo.token||'NO TOKEN'}`
+          }
+        }).then(res=>{
+          const {data:{id}} = res.data;
+          //跳转到付款页
+          this.$router.push({
+            path:"/air/pay",
+            query:{id}
+          });
+        }).catch(err=>{
+          const{message} = err.response.data;
+          //警告提示
+          this.$confirm(message,'提示',{
+            confirmButtonText:'确定',
+            showCancelButton:false,
+            type:'warning'
+          })
+        })
     }
   }
 };
