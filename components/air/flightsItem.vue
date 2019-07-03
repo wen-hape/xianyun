@@ -1,10 +1,10 @@
 <template>
     <div class="flight-item">
-        <div @click="handleShowRecommend">
+        <div>
             <!-- 显示的机票信息 -->
             <el-row type="flex" align="middle" class="flight-info">
                 <el-col :span="6">
-                    <span>{{data.airline_name}} </span> {{data.flight_no}}
+                    <span>{{data.airline_name}}</span> {{data.flight_no}}
                 </el-col>
                 <el-col :span="12">
                     <el-row type="flex" justify="space-between" class="flight-info-center">
@@ -31,7 +31,13 @@
             <el-row type="flex"  justify="space-between" align="middle">
                 <el-col :span="4">低价推荐</el-col>
                 <el-col :span="20">
-                    <el-row type="flex" justify="space-between" align="middle" class="flight-sell">
+                    <el-row 
+                    type="flex" 
+                    justify="space-between" 
+                    align="middle" 
+                    class="flight-sell"
+                    v-for="(item, index) in data.seat_infos"
+                    :key="index">
                         <el-col :span="16" class="flight-sell-left">
                             <span>{{item.name}}</span> | {{item.supplierName}}
                         </el-col>
@@ -41,7 +47,8 @@
                         <el-col :span="3" class="choose-button">
                             <el-button 
                             type="warning" 
-                            size="mini">
+                            size="mini"
+                            @click="handleChoose(data.id,item.seat_xid)">
                             选定
                             </el-button>
                             <p>剩余：{{item.discount}}</p>
@@ -88,6 +95,16 @@ export default {
         //控制推荐列表的展开收起
         handleShowRecommend(){
             this.showRecommend = !this.showRecommend;
+        },
+        //选定按钮触发跳转
+        handleChoose(id,seatId){
+            this.$router.push({
+                path:'/air/order',
+                query:{
+                    id,
+                    seat_xid:seatId
+                }
+            })
         }
     }
 }
